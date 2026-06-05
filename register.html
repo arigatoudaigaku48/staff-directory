@@ -340,6 +340,18 @@
         <input type="checkbox" id="cat_claim" value="クレーム" onchange="toggleDetails()">
         <label for="cat_claim">📞 クレーム対応</label>
       </div>
+      <div class="category-item">
+        <input type="checkbox" id="cat_somu" value="総務" onchange="toggleDetails()">
+        <label for="cat_somu">🗂️ 総務</label>
+      </div>
+      <div class="category-item">
+        <input type="checkbox" id="cat_anken" value="案件共有" onchange="toggleDetails()">
+        <label for="cat_anken">📢 案件共有</label>
+      </div>
+      <div class="category-item" style="grid-column: span 2;">
+        <input type="checkbox" id="cat_trouble" value="当日トラブル" onchange="toggleDetails()">
+        <label for="cat_trouble">🚨 当日トラブル対応</label>
+      </div>
     </div>
   </div>
 
@@ -413,6 +425,37 @@
     </div>
   </div>
 
+  <!-- 総務詳細 -->
+  <div class="card details-section" id="detail_somu">
+    <div class="card-title">総務詳細</div>
+    <div class="detail-chips">
+      <div class="chip-item"><input type="checkbox" id="s_shift" name="somu_detail" value="シフト反映"><label for="s_shift">シフト反映</label></div>
+      <div class="chip-item"><input type="checkbox" id="s_onoff" name="somu_detail" value="シフト提出後のオンオフ"><label for="s_onoff">オンオフ</label></div>
+      <div class="chip-item"><input type="checkbox" id="s_meishi" name="somu_detail" value="名刺発注"><label for="s_meishi">名刺発注</label></div>
+      <div class="chip-item"><input type="checkbox" id="s_nano" name="somu_detail" value="ナノソル発注"><label for="s_nano">ナノソル発注</label></div>
+      <div class="chip-item"><input type="checkbox" id="s_other" name="somu_detail" value="その他（総務）"><label for="s_other">その他</label></div>
+    </div>
+  </div>
+
+  <!-- 案件共有詳細 -->
+  <div class="card details-section" id="detail_anken">
+    <div class="card-title">案件共有詳細</div>
+    <div class="detail-chips">
+      <div class="chip-item"><input type="checkbox" id="a_anken" name="anken_detail" value="案件共有"><label for="a_anken">案件共有</label></div>
+      <div class="chip-item"><input type="checkbox" id="a_onoff" name="anken_detail" value="シフト提出後のオンオフ"><label for="a_onoff">オンオフ</label></div>
+    </div>
+  </div>
+
+  <!-- 当日トラブル詳細 -->
+  <div class="card details-section" id="detail_trouble">
+    <div class="card-title">当日トラブル詳細</div>
+    <div class="detail-chips">
+      <div class="chip-item"><input type="checkbox" id="t_fuzai" name="trouble_detail" value="当日お客様不在"><label for="t_fuzai">お客様不在</label></div>
+      <div class="chip-item"><input type="checkbox" id="t_kosho" name="trouble_detail" value="エアコン故障"><label for="t_kosho">エアコン故障</label></div>
+      <div class="chip-item"><input type="checkbox" id="t_other" name="trouble_detail" value="その他トラブル"><label for="t_other">その他</label></div>
+    </div>
+  </div>
+
   <!-- 曜日・備考 -->
   <div class="card">
     <div class="card-title">曜日・備考（任意）</div>
@@ -435,7 +478,10 @@
     const map = {
       cat_yoyaku: 'detail_yoyaku',
       cat_keiri: 'detail_keiri',
-      cat_claim: 'detail_claim'
+      cat_claim: 'detail_claim',
+      cat_somu: 'detail_somu',
+      cat_anken: 'detail_anken',
+      cat_trouble: 'detail_trouble'
     };
     Object.entries(map).forEach(([cbId, sectionId]) => {
       const cb = document.getElementById(cbId);
@@ -459,7 +505,10 @@
     const ouchiniDetail = document.getElementById('ouchini_detail').value;
     if (ouchiniDetail) yoyakuDetails.push(`おうちにプロ：${ouchiniDetail}`);
 
-    const allDetails = [...yoyakuDetails, ...keiriDetails, ...claimDetails].join('・');
+    const somuDetails = [...document.querySelectorAll('[name="somu_detail"]:checked')].map(cb => cb.value);
+    const ankenDetails = [...document.querySelectorAll('[name="anken_detail"]:checked')].map(cb => cb.value);
+    const troubleDetails = [...document.querySelectorAll('[name="trouble_detail"]:checked')].map(cb => cb.value);
+    const allDetails = [...yoyakuDetails, ...keiriDetails, ...claimDetails, ...somuDetails, ...ankenDetails, ...troubleDetails].join('・');
 
     const payload = {
       store: document.getElementById('store').value,
