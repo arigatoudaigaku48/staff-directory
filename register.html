@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>担当者登録フォーム</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap');
+
+  :root {
+    --pink: #ffb347;
+    --pink-light: #fff3e0;
+    --pink-dark: #f57c00;
+    --white: #ffffff;
+    --gray: #757575;
+    --text: #333333;
+    --radius: 16px;
+    --shadow: 0 4px 20px rgba(244,167,185,0.3);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 50%, #fff3e0 100%);
+    min-height: 100vh;
+    padding: 20px 16px 40px;
+    color: var(--text);
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #e65100;
+    margin-bottom: 6px;
+  }
+
+  .header p {
+    font-size: 13px;
+    color: var(--gray);
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #e65100;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .card-title::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 16px;
+    background: var(--pink);
+    border-radius: 2px;
+  }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray);
+    margin-bottom: 6px;
+  }
+
+  input[type="text"],
+  input[type="url"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #ffe0b2;
+    border-radius: 12px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: #fff;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 14px;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--pink-dark);
+  }
+
+  .field-group {
+    margin-bottom: 4px;
+  }
+
+  /* カテゴリチェックボックス */
+  .category-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .category-item {
+    position: relative;
+  }
+
+  .category-item input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .category-item label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 8px;
+    border: 2px solid #ffe0b2;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    margin: 0;
+  }
+
+  .category-item input:checked + label {
+    background: var(--pink-light);
+    border-color: var(--pink-dark);
+    color: #e65100;
+    font-weight: 700;
+  }
+
+  /* 詳細業務チェックボックス */
+  .details-section {
+    display: none;
+    margin-bottom: 14px;
+  }
+
+  .details-section.active {
+    display: block;
+  }
+
+  .details-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #e65100;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    background: var(--pink-light);
+    border-radius: 8px;
+  }
+
+  .detail-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .chip-item {
+    position: relative;
+  }
+
+  .chip-item input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .chip-item label {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border: 2px solid #ffe0b2;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gray);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .chip-item input:checked + label {
+    background: var(--pink-light);
+    border-color: var(--pink-dark);
+    color: #e65100;
+    font-weight: 700;
+  }
+
+  /* エリア選択 */
+  .area-section {
+    display: none;
+  }
+  .area-section.active {
+    display: block;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #ffa726, #f57c00);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(233,30,140,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 8px;
+  }
+
+  .submit-btn:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 8px rgba(233,30,140,0.3);
+  }
+
+  .success-msg {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-top: 16px;
+  }
+
+  .success-msg .emoji { font-size: 40px; margin-bottom: 10px; }
+  .success-msg p { color: #e65100; font-weight: 700; font-size: 16px; }
+
+  .required {
+    color: #f57c00;
+    font-size: 11px;
+    margin-left: 4px;
+  }
+
+  .hint {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: -10px;
+    margin-bottom: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🌸 担当者登録フォーム</h1>
+  <p>担当業務の情報を登録してください</p>
+</div>
+
+<form id="mainForm">
+
+  <!-- 基本情報 -->
+  <div class="card">
+    <div class="card-title">基本情報</div>
+
+    <div class="field-group">
+      <label>店舗名 <span class="required">必須</span></label>
+      <input type="text" id="store" placeholder="例：ありがとうエアコンお掃除専門店" required>
+    </div>
+
+    <div class="field-group">
+      <label>担当者名 <span class="required">必須</span></label>
+      <input type="text" id="name" placeholder="例：佐藤　はな" required>
+    </div>
+
+    <div class="field-group">
+      <label>ふりがな <span class="required">必須</span></label>
+      <input type="text" id="furigana" placeholder="例：さとう はな" required>
+    </div>
+
+    <div class="field-group">
+      <label>担当略称 <span class="required">必須</span></label>
+      <input type="text" id="ryakusho" placeholder="例：はな" required>
+      <p class="hint">予約表に表示される名前（例：喜響・折原・きょう）</p>
+    </div>
+
+    <div class="field-group">
+      <label>LINE友達追加リンク <span class="required">必須</span></label>
+      <input type="text" id="lineLink" placeholder="https://line.me/ti/p/XXXXXXXX" required>
+      <p class="hint">LINEアプリ → プロフィール → リンクをコピー</p>
+    </div>
+  </div>
+
+  <!-- カテゴリ選択 -->
+  <div class="card">
+    <div class="card-title">担当カテゴリ（複数選択可）</div>
+    <div class="category-grid">
+      <div class="category-item">
+        <input type="checkbox" id="cat_yoyaku" value="予約" onchange="toggleDetails()">
+        <label for="cat_yoyaku">📅 予約</label>
+      </div>
+      <div class="category-item">
+        <input type="checkbox" id="cat_keiri" value="経理" onchange="toggleDetails()">
+        <label for="cat_keiri">💰 経理</label>
+      </div>
+      <div class="category-item">
+        <input type="checkbox" id="cat_owner" value="オーナー" onchange="toggleDetails()">
+        <label for="cat_owner">👑 オーナー</label>
+      </div>
+      <div class="category-item">
+        <input type="checkbox" id="cat_shidou" value="指導者" onchange="toggleDetails()">
+        <label for="cat_shidou">📚 指導者</label>
+      </div>
+      <div class="category-item" style="grid-column: span 2;">
+        <input type="checkbox" id="cat_claim" value="クレーム" onchange="toggleDetails()">
+        <label for="cat_claim">📞 クレーム対応</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 予約詳細 -->
+  <div class="card details-section" id="detail_yoyaku">
+    <div class="card-title">予約詳細</div>
+
+    <!-- ユアマイスター -->
+    <div class="details-title">📌 ユアマイスター</div>
+    <div class="detail-chips">
+      <div class="chip-item"><input type="checkbox" id="ym_kanto" name="yoyaku_detail" value="ユアマイスター（関東）"><label for="ym_kanto">関東</label></div>
+      <div class="chip-item"><input type="checkbox" id="ym_kansai" name="yoyaku_detail" value="ユアマイスター（関西）"><label for="ym_kansai">関西</label></div>
+      <div class="chip-item"><input type="checkbox" id="ym_aichi" name="yoyaku_detail" value="ユアマイスター（愛知）"><label for="ym_aichi">愛知</label></div>
+      <div class="chip-item"><input type="checkbox" id="ym_kyushu" name="yoyaku_detail" value="ユアマイスター（九州）"><label for="ym_kyushu">九州</label></div>
+    </div>
+    <div class="field-group">
+      <label>関東の細分化エリア（任意）</label>
+      <input type="text" id="ym_kanto_detail" placeholder="例：埼玉・千葉・神奈川">
+    </div>
+
+    <!-- ミツモア -->
+    <div class="details-title">📌 ミツモア</div>
+    <div class="detail-chips">
+      <div class="chip-item"><input type="checkbox" id="mm_kanto" name="yoyaku_detail" value="ミツモア（関東）"><label for="mm_kanto">関東</label></div>
+      <div class="chip-item"><input type="checkbox" id="mm_kansai" name="yoyaku_detail" value="ミツモア（関西）"><label for="mm_kansai">関西</label></div>
+      <div class="chip-item"><input type="checkbox" id="mm_aichi" name="yoyaku_detail" value="ミツモア（愛知）"><label for="mm_aichi">愛知</label></div>
+      <div class="chip-item"><input type="checkbox" id="mm_kyushu" name="yoyaku_detail" value="ミツモア（九州）"><label for="mm_kyushu">九州</label></div>
+    </div>
+
+    <!-- くらしのマーケット -->
+    <div class="details-title">📌 くらしのマーケット</div>
+    <div class="detail-chips">
+      <div class="chip-item"><input type="checkbox" id="kurashi" name="yoyaku_detail" value="くらしのマーケット"><label for="kurashi">担当する</label></div>
+    </div>
+
+    <!-- おうちにプロ -->
+    <div class="details-title">📌 おうちにプロ</div>
+    <div class="field-group">
+      <input type="text" id="ouchini_detail" placeholder="例：おうちにプロA・おうちにプロB">
+    </div>
+
+    <!-- 自社 -->
+    <div class="details-title">📌 自社</div>
+    <div class="detail-chips">
+      <div class="chip-item"><input type="checkbox" id="jisha_hp" name="yoyaku_detail" value="自社（HP）"><label for="jisha_hp">HP</label></div>
+      <div class="chip-item"><input type="checkbox" id="jisha_lp" name="yoyaku_detail" value="自社（LP）"><label for="jisha_lp">LP</label></div>
+      <div class="chip-item"><input type="checkbox" id="jisha_line" name="yoyaku_detail" value="自社（LINE）"><label for="jisha_line">LINE</label></div>
+      <div class="chip-item"><input type="checkbox" id="jisha_tel" name="yoyaku_detail" value="自社（電話）"><label for="jisha_tel">電話</label></div>
+      <div class="chip-item"><input type="checkbox" id="jisha_chirashi" name="yoyaku_detail" value="自社（チラシ）"><label for="jisha_chirashi">チラシ</label></div>
+    </div>
+  </div>
+
+  <!-- 経理詳細 -->
+  <div class="card details-section" id="detail_keiri">
+    <div class="card-title">経理詳細</div>
+    <div class="detail-chips">
+      <div class="chip-item"><input type="checkbox" id="k_uriage" name="keiri_detail" value="売上登録"><label for="k_uriage">売上登録</label></div>
+      <div class="chip-item"><input type="checkbox" id="k_seikyu" name="keiri_detail" value="他社間請求"><label for="k_seikyu">他社間請求</label></div>
+      <div class="chip-item"><input type="checkbox" id="k_hoshu" name="keiri_detail" value="報酬計算"><label for="k_hoshu">報酬計算</label></div>
+      <div class="chip-item"><input type="checkbox" id="k_kanryo" name="keiri_detail" value="作業完了報告"><label for="k_kanryo">作業完了報告</label></div>
+      <div class="chip-item"><input type="checkbox" id="k_kakunin" name="keiri_detail" value="金額問い合わせ"><label for="k_kakunin">金額問い合わせ</label></div>
+    </div>
+  </div>
+
+  <!-- クレーム詳細 -->
+  <div class="card details-section" id="detail_claim">
+    <div class="card-title">クレーム詳細</div>
+    <div class="detail-chips">
+      <div class="chip-item"><input type="checkbox" id="cl_ac" name="claim_detail" value="エアコン関連クレーム"><label for="cl_ac">エアコン関連</label></div>
+      <div class="chip-item"><input type="checkbox" id="cl_cust" name="claim_detail" value="お客様クレーム"><label for="cl_cust">お客様対応</label></div>
+    </div>
+  </div>
+
+  <!-- 曜日・備考 -->
+  <div class="card">
+    <div class="card-title">曜日・備考（任意）</div>
+    <textarea id="schedule" rows="3" placeholder="例：月水金担当、火木は別担当者など"></textarea>
+  </div>
+
+  <button type="submit" class="submit-btn">✨ 登録する</button>
+
+</form>
+
+<div class="success-msg" id="successMsg">
+  <div class="emoji">🌸</div>
+  <p>登録が完了しました！</p>
+</div>
+
+<script>
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxqOCTeh_Ify3NwagLva-LMP2GY-A_oa2I4oWkwr-7QLnTqFOmj4G5acVoSVV_JV7b2sA/exec';
+
+  function toggleDetails() {
+    const map = {
+      cat_yoyaku: 'detail_yoyaku',
+      cat_keiri: 'detail_keiri',
+      cat_claim: 'detail_claim'
+    };
+    Object.entries(map).forEach(([cbId, sectionId]) => {
+      const cb = document.getElementById(cbId);
+      const section = document.getElementById(sectionId);
+      if (section) section.classList.toggle('active', cb.checked);
+    });
+  }
+
+  document.getElementById('mainForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const categories = [...document.querySelectorAll('.category-grid input:checked')].map(cb => cb.value);
+
+    const yoyakuDetails = [...document.querySelectorAll('[name="yoyaku_detail"]:checked')].map(cb => cb.value);
+    const keiriDetails = [...document.querySelectorAll('[name="keiri_detail"]:checked')].map(cb => cb.value);
+    const claimDetails = [...document.querySelectorAll('[name="claim_detail"]:checked')].map(cb => cb.value);
+
+    const kmKantoDetail = document.getElementById('ym_kanto_detail').value;
+    if (kmKantoDetail) yoyakuDetails.push(`関東細分化：${kmKantoDetail}`);
+
+    const ouchiniDetail = document.getElementById('ouchini_detail').value;
+    if (ouchiniDetail) yoyakuDetails.push(`おうちにプロ：${ouchiniDetail}`);
+
+    const allDetails = [...yoyakuDetails, ...keiriDetails, ...claimDetails].join('・');
+
+    const payload = {
+      store: document.getElementById('store').value,
+      name: document.getElementById('name').value,
+      furigana: document.getElementById('furigana').value,
+      ryakusho: document.getElementById('ryakusho').value,
+      categories: categories,
+      details: allDetails,
+      schedule: document.getElementById('schedule').value,
+      lineLink: document.getElementById('lineLink').value
+    };
+
+    const btn = document.querySelector('.submit-btn');
+    btn.textContent = '送信中...';
+    btn.disabled = true;
+
+    try {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      document.getElementById('mainForm').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+    } catch (err) {
+      alert('エラーが発生しました。もう一度お試しください。');
+      btn.textContent = '✨ 登録する';
+      btn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>

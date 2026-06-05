@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>担当者一覧</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap');
+
+  :root {
+    --orange: #ffb347;
+    --orange-light: #fff3e0;
+    --orange-dark: #f57c00;
+    --orange-deep: #e65100;
+    --white: #ffffff;
+    --gray: #757575;
+    --text: #333333;
+    --radius: 16px;
+    --shadow: 0 4px 20px rgba(255,179,71,0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    background: #f9f3ee;
+    min-height: 100vh;
+    color: var(--text);
+  }
+
+  /* ヘッダー */
+  .header {
+    background: linear-gradient(135deg, #ffa726, #f57c00);
+    padding: 20px 16px 16px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(245,124,0,0.3);
+  }
+
+  .header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 10px;
+  }
+
+  /* 検索バー */
+  .search-wrap {
+    position: relative;
+    margin-bottom: 10px;
+  }
+
+  .search-wrap input {
+    width: 100%;
+    padding: 10px 16px 10px 38px;
+    border: none;
+    border-radius: 20px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 14px;
+    background: rgba(255,255,255,0.95);
+    color: var(--text);
+    outline: none;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+  }
+
+  /* カテゴリフィルター */
+  .filter-chips {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+  .filter-chips::-webkit-scrollbar { display: none; }
+
+  .filter-chip {
+    flex-shrink: 0;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    background: rgba(255,255,255,0.3);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .filter-chip.active {
+    background: white;
+    color: var(--orange-deep);
+    font-weight: 700;
+    border-color: white;
+  }
+
+  /* コンテンツ */
+  .content {
+    padding: 16px;
+  }
+
+  /* 店舗グループ */
+  .store-group {
+    margin-bottom: 20px;
+  }
+
+  .store-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, #ffa726, #f57c00);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+  }
+
+  .store-header h2 {
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    flex: 1;
+  }
+
+  .store-count {
+    font-size: 11px;
+    color: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.2);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  /* 担当者カード */
+  .staff-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .staff-card {
+    background: white;
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    text-decoration: none;
+    display: block;
+    border: 2px solid transparent;
+  }
+
+  .staff-card:active {
+    transform: scale(0.97);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+
+  .staff-card.has-line {
+    border-color: #ffe0b2;
+  }
+
+  .staff-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .staff-furigana {
+    font-size: 10px;
+    color: var(--gray);
+    margin-bottom: 6px;
+  }
+
+  .staff-ryakusho {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--orange-deep);
+    background: var(--orange-light);
+    padding: 2px 8px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+  }
+
+  .category-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .cat-tag {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-weight: 500;
+  }
+
+  .cat-予約 { background: #e3f2fd; color: #1565c0; }
+  .cat-経理 { background: #e8f5e9; color: #2e7d32; }
+  .cat-オーナー { background: #fff8e1; color: #f57f17; }
+  .cat-指導者 { background: #f3e5f5; color: #6a1b9a; }
+  .cat-クレーム { background: #fce4ec; color: #880e4f; }
+
+  .line-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    padding: 7px;
+    background: #06c755;
+    color: white;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .no-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 7px;
+    background: #f5f5f5;
+    color: #bbb;
+    border-radius: 8px;
+    font-size: 11px;
+  }
+
+  .schedule-text {
+    font-size: 10px;
+    color: var(--gray);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  /* ローディング */
+  .loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--gray);
+  }
+
+  .loading-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid #ffe0b2;
+    border-top-color: var(--orange-dark);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--gray);
+    font-size: 14px;
+  }
+
+  /* 登録ボタン */
+  .register-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    background: linear-gradient(135deg, #ffa726, #f57c00);
+    color: white;
+    padding: 14px 20px;
+    border-radius: 28px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 16px rgba(245,124,0,0.45);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 200;
+  }
+
+  .count-badge {
+    font-size: 12px;
+    color: var(--gray);
+    text-align: right;
+    margin-bottom: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🍊 担当者一覧</h1>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="店舗名・担当者名・略称で検索" oninput="renderList()">
+  </div>
+  <div class="filter-chips" id="filterChips">
+    <div class="filter-chip active" data-cat="all" onclick="setFilter('all')">すべて</div>
+    <div class="filter-chip" data-cat="予約" onclick="setFilter('予約')">📅 予約</div>
+    <div class="filter-chip" data-cat="経理" onclick="setFilter('経理')">💰 経理</div>
+    <div class="filter-chip" data-cat="オーナー" onclick="setFilter('オーナー')">👑 オーナー</div>
+    <div class="filter-chip" data-cat="指導者" onclick="setFilter('指導者')">📚 指導者</div>
+    <div class="filter-chip" data-cat="クレーム" onclick="setFilter('クレーム')">📞 クレーム</div>
+  </div>
+</div>
+
+<div class="content">
+  <div id="countBadge" class="count-badge"></div>
+  <div id="listContainer">
+    <div class="loading">
+      <div class="loading-spinner"></div>
+      <p>読み込み中...</p>
+    </div>
+  </div>
+</div>
+
+<a href="register.html" class="register-fab">＋ 担当者を登録</a>
+
+<script>
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxqOCTeh_Ify3NwagLva-LMP2GY-A_oa2I4oWkwr-7QLnTqFOmj4G5acVoSVV_JV7b2sA/exec';
+
+  let allData = [];
+  let currentFilter = 'all';
+
+  async function loadData() {
+    try {
+      const res = await fetch(GAS_URL);
+      const data = await res.json();
+      allData = data.filter(d => d.store); // 空行除外
+      renderList();
+    } catch (err) {
+      document.getElementById('listContainer').innerHTML = '<div class="empty">データの読み込みに失敗しました😢<br>再読み込みをお試しください</div>';
+    }
+  }
+
+  function setFilter(cat) {
+    currentFilter = cat;
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.classList.toggle('active', chip.dataset.cat === cat);
+    });
+    renderList();
+  }
+
+  function renderList() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+
+    let filtered = allData.filter(d => {
+      const matchSearch = !query ||
+        (d.store || '').toLowerCase().includes(query) ||
+        (d.name || '').toLowerCase().includes(query) ||
+        (d.furigana || '').toLowerCase().includes(query) ||
+        (d.ryakusho || '').toLowerCase().includes(query);
+
+      const matchCat = currentFilter === 'all' ||
+        (d.categories || '').includes(currentFilter);
+
+      return matchSearch && matchCat;
+    });
+
+    // 店舗ごとにグループ化
+    const grouped = {};
+    filtered.forEach(d => {
+      const store = d.store || '店舗名未設定';
+      if (!grouped[store]) grouped[store] = [];
+      grouped[store].push(d);
+    });
+
+    const storeNames = Object.keys(grouped).sort();
+    const totalStaff = filtered.length;
+
+    document.getElementById('countBadge').textContent =
+      `${storeNames.length}店舗 / ${totalStaff}名`;
+
+    if (storeNames.length === 0) {
+      document.getElementById('listContainer').innerHTML =
+        '<div class="empty">該当する担当者が見つかりません🔍</div>';
+      return;
+    }
+
+    const html = storeNames.map(store => {
+      const staffList = grouped[store];
+      const cards = staffList.map(s => {
+        const cats = (s.categories || '').split('・').filter(Boolean);
+        const catTags = cats.map(c =>
+          `<span class="cat-tag cat-${c}">${c}</span>`
+        ).join('');
+
+        const lineBtn = s.lineLink
+          ? `<a href="${s.lineLink}" class="line-btn" onclick="event.stopPropagation()">💬 LINE追加</a>`
+          : `<div class="no-line">LINEリンクなし</div>`;
+
+        const schedule = s.schedule
+          ? `<div class="schedule-text">🕐 ${s.schedule}</div>`
+          : '';
+
+        const ryakusho = s.ryakusho
+          ? `<div class="staff-ryakusho">略称：${s.ryakusho}</div>`
+          : '';
+
+        return `
+          <div class="staff-card ${s.lineLink ? 'has-line' : ''}">
+            <div class="staff-name">${s.name || '名前未設定'}</div>
+            <div class="staff-furigana">${s.furigana || ''}</div>
+            ${ryakusho}
+            <div class="category-tags">${catTags}</div>
+            ${s.details ? `<div class="schedule-text">📋 ${s.details}</div>` : ''}
+            ${schedule}
+            ${lineBtn}
+          </div>`;
+      }).join('');
+
+      return `
+        <div class="store-group">
+          <div class="store-header">
+            <h2>🏪 ${store}</h2>
+            <span class="store-count">${staffList.length}名</span>
+          </div>
+          <div class="staff-cards">${cards}</div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('listContainer').innerHTML = html;
+  }
+
+  loadData();
+</script>
+
+</body>
+</html>
