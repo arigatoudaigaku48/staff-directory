@@ -305,6 +305,11 @@
     </div>
 
     <div class="field-group">
+      <label>Gmailアドレス <span class="required">必須</span></label>
+      <input type="email" id="gmail" placeholder="例：hanako@gmail.com" required>
+    </div>
+
+    <div class="field-group">
       <label>LINE友達追加リンク <span class="required">必須</span></label>
       <input type="text" id="lineLink" placeholder="https://line.me/ti/p/XXXXXXXX" required>
       <p class="hint">LINEアプリ → プロフィール → リンクをコピー</p>
@@ -466,7 +471,8 @@
       categories: categories,
       details: allDetails,
       schedule: document.getElementById('schedule').value,
-      lineLink: document.getElementById('lineLink').value
+      lineLink: document.getElementById('lineLink').value,
+      gmail: document.getElementById('gmail').value
     };
 
     const btn = document.querySelector('.submit-btn');
