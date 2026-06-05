@@ -393,6 +393,8 @@
     const html = storeNames.map(store => {
       const staffList = grouped[store];
       const cards = staffList.map(s => {
+        const name = (s.lastName || '') + ' ' + (s.firstName || '');
+        const kana = (s.lastNameKana || '') + ' ' + (s.firstNameKana || '');
         const cats = (s.categories || '').split('・').filter(Boolean);
         const catTags = cats.map(c =>
           `<span class="cat-tag cat-${c}">${c}</span>`
@@ -412,8 +414,8 @@
 
         return `
           <div class="staff-card ${s.lineLink ? 'has-line' : ''}">
-            <div class="staff-name">${s.name || '名前未設定'}</div>
-            <div class="staff-furigana">${s.furigana || ''}</div>
+            <div class="staff-name">${name.trim() || '名前未設定'}</div>
+            <div class="staff-furigana">${kana.trim()}</div>
             ${ryakusho}
             <div class="category-tags">${catTags}</div>
             ${s.details ? `<div class="schedule-text">📋 ${s.details}</div>` : ''}

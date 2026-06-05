@@ -284,12 +284,18 @@
 
     <div class="field-group">
       <label>担当者名 <span class="required">必須</span></label>
-      <input type="text" id="name" placeholder="例：佐藤　はな" required>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <input type="text" id="lastName" placeholder="姓（例：佐藤）" required>
+        <input type="text" id="firstName" placeholder="名（例：はな）" required>
+      </div>
     </div>
 
     <div class="field-group">
       <label>ふりがな <span class="required">必須</span></label>
-      <input type="text" id="furigana" placeholder="例：さとう はな" required>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <input type="text" id="lastNameKana" placeholder="せい（例：さとう）" required>
+        <input type="text" id="firstNameKana" placeholder="めい（例：はな）" required>
+      </div>
     </div>
 
     <div class="field-group">
@@ -452,8 +458,10 @@
 
     const payload = {
       store: document.getElementById('store').value,
-      name: document.getElementById('name').value,
-      furigana: document.getElementById('furigana').value,
+      lastName: document.getElementById('lastName').value,
+      firstName: document.getElementById('firstName').value,
+      lastNameKana: document.getElementById('lastNameKana').value,
+      firstNameKana: document.getElementById('firstNameKana').value,
       ryakusho: document.getElementById('ryakusho').value,
       categories: categories,
       details: allDetails,
